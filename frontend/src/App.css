@@ -2,6 +2,7 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
+  height: 100vh;
 }
 
 .container {
@@ -9,6 +10,40 @@
   border-radius: 10px;
   padding: 2rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  height: calc(100vh - 4rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header-controls {
+  display: flex;
+  gap: 1rem;
+}
+
+.main-content {
+  display: flex;
+  gap: 2rem;
+  flex: 1;
+  min-height: 0;
+}
+
+.left-panel {
+  flex: 2;
+  overflow-y: auto;
+  min-width: 300px;
+}
+
+.right-panel {
+  flex: 3;
+  overflow-y: auto;
+  min-width: 400px;
 }
 
 h1 {
@@ -152,4 +187,72 @@ button:hover {
 button:disabled {
   background: #b2bec3;
   cursor: not-allowed;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  position: relative;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+  padding: 0.5rem;
+}
+
+.add-button {
+  background: #2ecc71;
+}
+
+.add-button:hover {
+  background: #27ae60;
+}
+
+.reset-button {
+  background: #e74c3c;
+}
+
+.reset-button:hover {
+  background: #c0392b;
+}
+
+.no-items {
+  text-align: center;
+  color: #666;
+  margin-top: 2rem;
+}
+
+.calculate-button {
+  width: 100%;
+  margin-top: 1rem;
+  background: #3498db;
+}
+
+.calculate-button:hover {
+  background: #2980b9;
 }
