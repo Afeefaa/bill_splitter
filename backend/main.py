@@ -120,32 +120,40 @@ class BillSplitter:
             for person in item['shared_by']:
                 shares[person] += share_per_person
         
-        # Apply tax proportionally
+        # Apply tax first
         subtotal = self.get_subtotal()
         tax_amount = subtotal * (self.tax_percent / 100)
+        amount_after_tax = subtotal + tax_amount
         
-        # Apply discount proportionally
-        discount_amount = subtotal * (self.discount_percent / 100)
+        # Apply discount on amount after tax
+        discount_amount = amount_after_tax * (self.discount_percent / 100)
         
         # Adjust each person's share with tax and discount
         for person in shares:
-            person_ratio = shares[person] / subtotal if subtotal > 0 else 0
-            shares[person] += (tax_amount * person_ratio)
-            shares[person] -= (discount_amount * person_ratio)
+            if subtotal > 0:
+                # First apply tax proportionally
+                person_ratio = shares[person] / subtotal
+                shares[person] += (tax_amount * person_ratio)
+                
+                # Then apply discount on the amount after tax
+                person_ratio_after_tax = shares[person] / amount_after_tax
+                shares[person] -= (discount_amount * person_ratio_after_tax)
                 
         return shares
 
     def get_total_bill(self) -> dict[str, float]:
         """
         Calculate bill details including subtotal, tax, discount and final total.
+        Discount is calculated on the amount after tax is applied.
         
         Returns:
             Dictionary containing bill breakdown
         """
         subtotal = self.get_subtotal()
         tax_amount = subtotal * (self.tax_percent / 100)
-        discount_amount = subtotal * (self.discount_percent / 100)
-        final_total = subtotal + tax_amount - discount_amount
+        amount_after_tax = subtotal + tax_amount
+        discount_amount = amount_after_tax * (self.discount_percent / 100)
+        final_total = amount_after_tax - discount_amount
         
         return {
             'subtotal': subtotal,

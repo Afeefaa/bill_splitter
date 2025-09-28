@@ -39,11 +39,13 @@ class BillSplitter {
     }
 
     getDiscountAmount() {
-        return (this.getSubtotal() * this.discount_percent) / 100;
+        const amountAfterTax = this.getSubtotal() + this.getTaxAmount();
+        return (amountAfterTax * this.discount_percent) / 100;
     }
 
     getFinalTotal() {
-        return this.getSubtotal() + this.getTaxAmount() - this.getDiscountAmount();
+        const amountAfterTax = this.getSubtotal() + this.getTaxAmount();
+        return amountAfterTax - this.getDiscountAmount();
     }
 
     calculateShares() {
@@ -62,15 +64,22 @@ class BillSplitter {
             });
         });
 
-        // Distribute tax and discount proportionally
-        const totalBeforeAdjustments = Object.values(shares).reduce((a, b) => a + b, 0);
+        // First apply tax proportionally
+        const subtotal = Object.values(shares).reduce((a, b) => a + b, 0);
         const taxAmount = this.getTaxAmount();
+
+        people.forEach(person => {
+            const proportion = shares[person] / subtotal;
+            shares[person] += (taxAmount * proportion);
+        });
+
+        // Then calculate and apply discount on amount after tax
+        const totalAfterTax = Object.values(shares).reduce((a, b) => a + b, 0);
         const discountAmount = this.getDiscountAmount();
 
         people.forEach(person => {
-            const proportion = shares[person] / totalBeforeAdjustments;
-            shares[person] += (taxAmount * proportion);
-            shares[person] -= (discountAmount * proportion);
+            const proportionAfterTax = shares[person] / totalAfterTax;
+            shares[person] -= (discountAmount * proportionAfterTax);
             // Round to 2 decimal places
             shares[person] = Math.round(shares[person] * 100) / 100;
         });
