@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './App.css'
+import BillSplitter from './utils/BillSplitter'
 
 function Modal({ isOpen, onClose, children }) {
   if (!isOpen) return null;
@@ -64,42 +65,39 @@ function App() {
     setIsAddModalOpen(false)
   }
 
-  const calculateBill = async () => {
+  const calculateBill = () => {
     try {
       setLoading(true)
       setError(null)
       
-      const response = await fetch('http://localhost:8000/calculate-bill', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          items: items.map(item => ({
-            name: item.name,
-            rate: item.rate,
-            quantity: item.quantity,
-            shared_by: item.shared_by
-          })),
-          tax_percent: parseFloat(tax),
-          discount_percent: parseFloat(discount)
-        })
-      })
+      const billSplitter = new BillSplitter();
+      
+      // Add all items
+      items.forEach(item => {
+        billSplitter.addItem(
+          item.name,
+          item.rate,
+          item.quantity,
+          item.shared_by
+        );
+      });
 
-      if (!response.ok) {
-        throw new Error('Failed to calculate bill')
-      }
+      // Set tax and discount
+      billSplitter.setTax(parseFloat(tax));
+      billSplitter.setDiscount(parseFloat(discount));
 
-      const data = await response.json()
+      // Calculate the bill
+      const result = billSplitter.calculateBill();
       
       setBillSummary({
-        subtotal: data.subtotal,
-        taxAmount: data.tax_amount,
-        discountAmount: data.discount_amount,
-        finalTotal: data.final_total
-      })
+        subtotal: result.subtotal,
+        taxAmount: result.tax_amount,
+        discountAmount: result.discount_amount,
+        finalTotal: result.final_total
+      });
       
-      setShares(data.shares)
+      // Set the shares
+      setShares(result.shares);
     } catch (err) {
       setError(err.message)
       console.error('Error calculating bill:', err)
