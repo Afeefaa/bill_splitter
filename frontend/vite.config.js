@@ -5,9 +5,9 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   build: {
-    outDir: '../backend/static',
+    outDir: 'dist',
     emptyOutDir: true,
     assetsDir: 'assets'
   },
-  base: './'
+  base: '/bill_splitter/'
 })
