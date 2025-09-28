@@ -1,18 +1,41 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.templating import Jinja2Templates
+from fastapi.requests import Request
 from pydantic import BaseModel
 from typing import List, Dict
-from fastapi.middleware.cors import CORSMiddleware
+import os
+import uvicorn
+
+# Sets the templates directory to the `build` folder from `npm run build`
+# this is where you'll find the index.html file.
+templates = Jinja2Templates(directory="./static")
 
 app = FastAPI()
 
-# Add CORS middleware to allow frontend requests
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Vite's default port
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Mounts the static folder with HTML responses and proper MIME types
+app.mount('/', StaticFiles(directory="./static", html=True), name="static")
+# app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# sets up a health check route. This is used later to show how you can hit
+# the API and the React App url's
+@app.get('/api/health')
+async def health():
+    return { 'status': 'healthy' }
+
+
+
 
 class Item(BaseModel):
     name: str
@@ -161,33 +184,36 @@ async def calculate_bill(bill_request: BillRequest):
         "shares": shares
     }
 
+# Defines a route handler for `/*` essentially.
+# NOTE: this needs to be the last route defined b/c it's a catch all route
+@app.get("/{rest_of_path:path}")
+async def react_app(req: Request, rest_of_path: str):
+    return templates.TemplateResponse('index.html', { 'request': req })
+
 if __name__ == "__main__":
-    import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
-# Example usage
-bill = BillSplitter()  # Initialize without default tax
+# # Example usage
+# bill = BillSplitter()  # Initialize without default tax
 
-# Adding items
-bill.add_item("Pizza", 20.0, 1, ["Alice", "Bob", "Charlie"])
-bill.add_item("Salad", 12.0, 1, ["Alice", "Bob"])
-bill.add_item("Soda", 3.0, 2, ["Charlie"])
+# # Adding items
+# bill.add_item("Pizza", 20.0, 1, ["Alice", "Bob", "Charlie"])
+# bill.add_item("Salad", 12.0, 1, ["Alice", "Bob"])
+# bill.add_item("Soda", 3.0, 2, ["Charlie"])
 
-# Update tax and add discount
-bill.set_tax()      # Change to 8% tax
-bill.set_discount(10.0) # Set 10% discount
+# # Update tax and add discount
+# bill.set_tax()      # Change to 8% tax
+# bill.set_discount(10.0) # Set 10% discount
 
-# Get individual shares
-shares = bill.calculate_shares()
-for person, amount in shares.items():
-    print(f"{person} owes: ${amount:.2f}")
+# # Get individual shares
+# shares = bill.calculate_shares()
+# for person, amount in shares.items():
+#     print(f"{person} owes: ${amount:.2f}")
 
-# Get complete bill breakdown
-bill_details = bill.get_total_bill()
-print("\nBill Breakdown:")
-print(f"Subtotal: ${bill_details['subtotal']:.2f}")
-print(f"Tax ({bill_details['tax_percent']}%): ${bill_details['tax_amount']:.2f}")
-print(f"Discount ({bill_details['discount_percent']}%): ${bill_details['discount_amount']:.2f}")
-print(f"Final Total: ${bill_details['final_total']:.2f}")
-
-# okay this is pretty good, can we add the functionality in a larger app which does something like split the expenses among everyone? so here the catch is different people might be paying for dif
+# # Get complete bill breakdown
+# bill_details = bill.get_total_bill()
+# print("\nBill Breakdown:")
+# print(f"Subtotal: ${bill_details['subtotal']:.2f}")
+# print(f"Tax ({bill_details['tax_percent']}%): ${bill_details['tax_amount']:.2f}")
+# print(f"Discount ({bill_details['discount_percent']}%): ${bill_details['discount_amount']:.2f}")
+# print(f"Final Total: ${bill_details['final_total']:.2f}")

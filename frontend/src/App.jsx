@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import BillSplitter from './utils/BillSplitter'
+import appInsights from './utils/AppInsights';
 
 function Modal({ isOpen, onClose, children }) {
   if (!isOpen) return null;
@@ -69,6 +70,8 @@ function App() {
     try {
       setLoading(true)
       setError(null)
+      appInsights.trackEvent({ name: 'CalculateBillClicked' });
+      console.log('Calculating bill...');
       
       const billSplitter = new BillSplitter();
       
@@ -189,9 +192,13 @@ function App() {
             {Object.keys(shares).length > 0 && (
               <div className="shares-summary">
                 <h2>Individual Shares</h2>
+                <p className="credit-note">
+                  Split using <a href="https://afeefaa.github.io/bill_splitter" target="_blank" rel="noopener noreferrer">afeefaa.github.io/bill_splitter</a>
+                </p>
                 {Object.entries(shares).map(([person, amount]) => (
                   <p key={person}>{person}: Rs {amount.toFixed(2)}</p>
                 ))}
+               
               </div>
             )}
           </div>
