@@ -9,5 +9,5 @@ export default defineConfig({
     emptyOutDir: true,
     assetsDir: 'assets'
   },
-  base: '/bill_splitter'
+  base: './'
 })
