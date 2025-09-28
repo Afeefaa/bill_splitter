@@ -133,7 +133,7 @@ function App() {
                 items.map((item, index) => (
                   <div key={index} className="item-card">
                     <h3>{item.name}</h3>
-                    <p>Price: ${item.rate} × {item.quantity}</p>
+                    <p>Price: Rs {item.rate} × {item.quantity}</p>
                     <p>Shared by: {item.shared_by.join(', ')}</p>
                   </div>
                 ))
@@ -179,10 +179,10 @@ function App() {
             {billSummary && (
               <div className="bill-summary">
                 <h2>Bill Summary</h2>
-                <p>Subtotal: ${billSummary.subtotal.toFixed(2)}</p>
-                <p>Tax ({tax}%): ${billSummary.taxAmount.toFixed(2)}</p>
-                <p>Discount ({discount}%): ${billSummary.discountAmount.toFixed(2)}</p>
-                <p className="total">Total: ${billSummary.finalTotal.toFixed(2)}</p>
+                <p>Subtotal: Rs {billSummary.subtotal.toFixed(2)}</p>
+                <p>Tax ({tax}%): Rs {billSummary.taxAmount.toFixed(2)}</p>
+                <p>Discount ({discount}%): Rs {billSummary.discountAmount.toFixed(2)}</p>
+                <p className="total">Total: Rs {billSummary.finalTotal.toFixed(2)}</p>
               </div>
             )}
 
@@ -190,7 +190,7 @@ function App() {
               <div className="shares-summary">
                 <h2>Individual Shares</h2>
                 {Object.entries(shares).map(([person, amount]) => (
-                  <p key={person}>{person}: ${amount.toFixed(2)}</p>
+                  <p key={person}>{person}: Rs {amount.toFixed(2)}</p>
                 ))}
               </div>
             )}
