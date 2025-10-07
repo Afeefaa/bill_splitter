@@ -1,14 +1,159 @@
 #root {
- .credit-note {
+  margin: 0 auto;
+  padding: 2rem;
+  height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.credit-note {
   margin-top: 0.5rem;
   font-size: 0.85em;
   color: #666;
   font-style: italic;
-}  margin: 0 auto;
-  padding: 2rem;
-  height: 100vh;
-  background-color: #f0f2f5;
+}
+
+.groups-container {
+  margin-bottom: 2rem;
+}
+
+.groups-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.group-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.group-card:hover {
+  transform: translateY(-2px);
+}
+
+.group-header, .item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.group-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.edit-button {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #666;
+  padding: 0.2rem;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.edit-button:hover {
   color: #1a1a1a;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+.group-header h3 {
+  margin: 0;
+  color: #1a1a1a;
+  font-size: 1.1rem;
+}
+
+.member-count {
+  font-size: 0.85rem;
+  color: #666;
+  background: #f0f2f5;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+}
+
+.members-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.member-tag {
+  background: #e9ecef;
+  color: #495057;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+}
+
+.shared-by-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.group-dropdown {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 5px;
+}
+
+.group-dropdown label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #495057;
+}
+
+.group-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 5px 0;
+  padding: 4px;
+}
+
+.group-checkbox:hover {
+  background-color: #e9ecef;
+  border-radius: 4px;
+}
+
+.group-checkbox input[type="checkbox"] {
+  margin: 0;
+  cursor: pointer;
+}
+
+.group-checkbox label {
+  margin: 0;
+  cursor: pointer;
+  font-weight: normal;
+/* } */
+  color: #1a1a1a;
+  width: 60vw;
+  min-width: 1000px;
 }
 
 /* .credit-note a {
@@ -28,6 +173,7 @@
   height: calc(100vh - 4rem);
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .header {
@@ -52,13 +198,15 @@
 .left-panel {
   flex: 2;
   overflow-y: auto;
-  min-width: 300px;
+  min-width: 10rem;
+  max-width: 40rem;
 }
 
 .right-panel {
   flex: 3;
   overflow-y: auto;
-  min-width: 400px;
+  min-width: 10rem;
+  max-width: 40rem;
 }
 
 h1 {
@@ -139,8 +287,10 @@ button:hover {
 
 .bill-controls {
   display: flex;
+  /* flex-direction: column; */
   gap: 1rem;
-  align-items: center;
+  align-items: flex-end;
+  /* justify-content: right; */
   margin-bottom: 2rem;
   background: #f8f9fa;
   padding: 1rem;
